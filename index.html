@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <title>Fun Zone | Love Meter + Personality</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: system-ui, 'Segoe UI', 'Poppins', sans-serif;
+    }
+
+    body {
+      background: linear-gradient(145deg, #1f2b3c 0%, #0f1a24 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
+    }
+
+    .fun-container {
+      max-width: 600px;
+      width: 100%;
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(14px);
+      border-radius: 2.5rem;
+      box-shadow: 0 25px 45px rgba(0, 0, 0, 0.3);
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      overflow: hidden;
+    }
+
+    .tabs {
+      display: flex;
+      background: rgba(0, 0, 0, 0.3);
+    }
+    .tab-btn {
+      flex: 1;
+      padding: 1rem;
+      font-size: 1.1rem;
+      font-weight: 600;
+      text-align: center;
+      background: transparent;
+      border: none;
+      color: #e2e8f0;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+    .tab-btn.active {
+      background: rgba(255, 215, 140, 0.2);
+      color: #ffdf8c;
+      border-bottom: 3px solid #ffb347;
+    }
+    .tab-content {
+      display: none;
+      padding: 2rem;
+      animation: fadeIn 0.3s ease;
+    }
+    .tab-content.active {
+      display: block;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(8px);}
+      to { opacity: 1; transform: translateY(0);}
+    }
+    h2 {
+      text-align: center;
+      color: #ffe2a4;
+      margin-bottom: 0.3rem;
+    }
+    .desc {
+      text-align: center;
+      font-size: 0.85rem;
+      color: #cbd5f0;
+      margin-bottom: 1.8rem;
+    }
+    input {
+      width: 100%;
+      padding: 0.9rem 1rem;
+      margin-bottom: 1rem;
+      border: none;
+      border-radius: 2rem;
+      background: #fef9ef;
+      font-size: 1rem;
+      outline: none;
+      text-align: center;
+    }
+    input:focus {
+      box-shadow: 0 0 0 3px #ffb34780;
+      background: white;
+    }
+    button {
+      width: 100%;
+      background: #ff9f4a;
+      border: none;
+      padding: 0.9rem;
+      font-size: 1.1rem;
+      font-weight: bold;
+      border-radius: 3rem;
+      color: #2c2c2c;
+      cursor: pointer;
+      transition: 0.15s;
+      box-shadow: 0 5px 0 #b4621a;
+      margin-top: 0.4rem;
+    }
+    button:active {
+      transform: translateY(2px);
+      box-shadow: 0 2px 0 #b4621a;
+    }
+    .result-card {
+      margin-top: 1.8rem;
+      background: rgba(0, 0, 0, 0.5);
+      border-radius: 2rem;
+      padding: 1.4rem;
+      text-align: center;
+      color: #ffefcf;
+    }
+    .big-emoji {
+      font-size: 3rem;
+      display: block;
+    }
+    .love-percent {
+      font-size: 2.8rem;
+      font-weight: 800;
+      color: #ffb7b2;
+    }
+    .love-msg {
+      font-size: 1rem;
+      margin-top: 0.6rem;
+    }
+    footer {
+      text-align: center;
+      font-size: 0.7rem;
+      color: #a0aec0;
+      padding: 0.8rem;
+      background: rgba(0,0,0,0.2);
+    }
+  </style>
+</head>
+<body>
+<div class="fun-container">
+  <div class="tabs">
+    <!-- Love Meter tab FIRST (active by default) -->
+    <button class="tab-btn active" data-tab="love">💕 Love Meter</button>
+    <button class="tab-btn" data-tab="personality">✨ Personality</button>
+  </div>
+
+  <!-- LOVE METER TAB - YAHI PAHLE DIKHEGA (active class) -->
+  <div id="love" class="tab-content active">
+    <h2>💘 Love Calculator</h2>
+    <div class="desc">Apna aur apni crush / partner ka naam daalo</div>
+    <input type="text" id="yourName" placeholder="Tumhara naam" autocomplete="off">
+    <input type="text" id="crushName" placeholder="Partner / Crush ka naam" autocomplete="off">
+    <button id="loveBtn">💖 Check Compatibility 💖</button>
+    <div id="loveResult" class="result-card">
+      <span class="big-emoji">❤️</span><br>
+      <span id="lovePercent" class="love-percent">?? %</span>
+      <div id="loveMsg" class="love-msg">Naam daalo aur jaano apni love story</div>
+    </div>
+  </div>
+
+  <!-- PERSONALITY TAB - SECOND MEIN -->
+  <div id="personality" class="tab-content">
+    <h2>🔮 Personality Predictor</h2>
+    <div class="desc">Apna naam daalo aur jaaniye apni asli personality</div>
+    <input type="text" id="personName" placeholder="e.g. Neha, Rahul, Simran" autocomplete="off">
+    <button id="personalityBtn">✨ Jaano apna asli roop ✨</button>
+    <div id="personalityResult" class="result-card">
+      <span class="big-emoji">🤔</span><br>
+      Yahan result aayega...
+    </div>
+  </div>
+  <footer>⚡ Love Meter pahle | Personality baad mein</footer>
+</div>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-app.js";
+  import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-firestore.js";
+  import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-analytics.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyCpiJ4h9QHY2FxhbAjNa3eSS6CbqMHJBeQ",
+    authDomain: "game-27719.firebaseapp.com",
+    databaseURL: "https://game-27719-default-rtdb.asia-southeast1.firebasedatabase.app",
+    projectId: "game-27719",
+    storageBucket: "game-27719.firebasestorage.app",
+    messagingSenderId: "1060787366034",
+    appId: "1:1060787366034:web:e6290d3bf16a5875a25e4b",
+    measurementId: "G-YWVY2H44T4"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const analytics = getAnalytics(app);
+  const db = getFirestore(app);
+
+  async function savePersonalityResult(userName, emoji, resultText) {
+    try {
+      await addDoc(collection(db, "personality_results"), {
+        userName: userName,
+        emoji: emoji,
+        result: resultText,
+        timestamp: new Date().toISOString(),
+        device: navigator.userAgent || "unknown"
+      });
+      console.log("Personality result saved!");
+    } catch (error) {
+      console.error("Error saving personality:", error);
+    }
+  }
+
+  async function saveLoveResult(name1, name2, percent, message) {
+    try {
+      await addDoc(collection(db, "love_results"), {
+        name1: name1,
+        name2: name2,
+        percent: percent,
+        message: message,
+        timestamp: new Date().toISOString(),
+        device: navigator.userAgent || "unknown"
+      });
+      console.log("Love result saved!");
+    } catch (error) {
+      console.error("Error saving love result:", error);
+    }
+  }
+
+  function getStringHash(str) {
+    let hash = 0;
+    for (let i = 0; i < str.length; i++) {
+      hash = ((hash << 5) - hash) + str.charCodeAt(i);
+      hash |= 0;
+    }
+    return Math.abs(hash);
+  }
+
+  const personalityList = [
+    { emoji: "😊", text: "Aap bahut khush aur positive insaan ho! Log aapki energy pasand karte hain." },
+    { emoji: "🔥", text: "Aap andar se bahut passionate ho. Kabhi kabhi thoda gussa bhi aata hai, lekin dil ke saaf ho." },
+    { emoji: "🌍", text: "Aapko ghumna-phirna bahut pasand hai. Adventure seeker ho!" },
+    { emoji: "🎨", text: "Creative soul ho. Kuch naya banane mein maza aata hai." },
+    { emoji: "🍿", text: "Netflix aur chill — yehi aapka style hai. Comfort lover ho." },
+    { emoji: "🧘", text: "Zindagi ko simple jeete ho. Meditation aur peace pasand hai." },
+    { emoji: "📚", text: "Books aur knowledge ke devta ho. Intelligent aur curious." },
+    { emoji: "😂", text: "Masti ke raja / rani. Friends group ke life ho tum." },
+    { emoji: "💪", text: "Strong aur determined. Jo thehraya usse karke hi maante ho." },
+    { emoji: "😴", text: "Thoda aalsi type, lekin kaam ho jata hai. Deep thinker." }
+  ];
+
+  function getPersonalityForName(name) {
+    if (!name) return null;
+    const hash = getStringHash(name.toLowerCase());
+    const index = hash % personalityList.length;
+    return personalityList[index];
+  }
+
+  function getLoveResult(name1, name2) {
+    if (!name1 || !name2) return null;
+    const n1 = name1.trim().toLowerCase();
+    const n2 = name2.trim().toLowerCase();
+    
+    // Special case for Heena & Suhail
+    if ((n1 === "heena" && n2 === "suhail") || (n1 === "suhail" && n2 === "heena")) {
+      return {
+        percent: 10,
+        message: "Ek dusre ko samjhne ki zaroorat hai. Quality time do, baatein karo. 💫"
+      };
+    }
+    
+    const combined = (name1 + name2).toLowerCase();
+    const hash = getStringHash(combined);
+    let percent = 20 + (hash % 81);
+    if (percent > 100) percent = 100;
+    
+    let message = "";
+    if (percent >= 90) message = "✨ Soulmate confirmed! Tum dono ek duje ke liye bane ho 💕";
+    else if (percent >= 70) message = "💑 Bahut achi jodi! Thoda pyaar aur care badao 😘";
+    else if (percent >= 50) message = "🫶 Strong friendship + romance chances, time do ❤️";
+    else if (percent >= 30) message = "🌱 Dosti hai, pyaar slowly grow karega, try karte raho";
+    else message = "💔 Thoda mushkil hai, but agar sachcha pyaar hai toh sab possible hai 💪";
+    
+    return { percent, message };
+  }
+
+  // LOVE METER BUTTON - pahle wala game
+  document.getElementById('loveBtn').addEventListener('click', async () => {
+    let yourName = document.getElementById('yourName').value.trim();
+    let crushName = document.getElementById('crushName').value.trim();
+    const percentSpan = document.getElementById('lovePercent');
+    const msgSpan = document.getElementById('loveMsg');
+
+    if (yourName === "" || crushName === "") {
+      percentSpan.innerHTML = "❌";
+      msgSpan.innerHTML = "Dono naam likho bina sharmaye 😉";
+      return;
+    }
+
+    const result = getLoveResult(yourName, crushName);
+    percentSpan.innerHTML = result.percent + " %";
+    msgSpan.innerHTML = `💌 ${result.message}`;
+    await saveLoveResult(yourName, crushName, result.percent, result.message);
+  });
+
+  // PERSONALITY BUTTON - baad wala game
+  document.getElementById('personalityBtn').addEventListener('click', async () => {
+    let name = document.getElementById('personName').value.trim();
+    const resultDiv = document.getElementById('personalityResult');
+    if (name === "") {
+      resultDiv.innerHTML = `<span class="big-emoji">⚠️</span><br>Pehle apna naam likho!`;
+      return;
+    }
+    const trait = getPersonalityForName(name);
+    resultDiv.innerHTML = `
+      <span class="big-emoji">${trait.emoji}</span><br>
+      "${name}" — ${trait.text}
+    `;
+    await savePersonalityResult(name, trait.emoji, trait.text);
+  });
+
+  // Tab switching logic (already Love active hai)
+  const tabs = document.querySelectorAll('.tab-btn');
+  const contents = document.querySelectorAll('.tab-content');
+  tabs.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const targetId = btn.getAttribute('data-tab');
+      tabs.forEach(b => b.classList.remove('active'));
+      contents.forEach(c => c.classList.remove('active'));
+      btn.classList.add('active');
+      document.getElementById(targetId).classList.add('active');
+    });
+  });
+</script>
+</body>
+</html>
